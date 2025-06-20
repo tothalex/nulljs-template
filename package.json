@@ -1,0 +1,29 @@
+{
+  "name": "nulljs-template",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "npx nulljs watch ./src",
+    "deploy": "npx nulljs deploy ./src/functions && npx nulljs deploy ./src/pages"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@eslint/json": "^0.12.0",
+    "@tothalex/cloud": "^0.0.10",
+    "@tothalex/nulljs": "^0.0.3",
+    "@types/react": "18",
+    "@types/react-dom": "18",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0",
+    "typescript-eslint": "^8.34.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "fast-text-encoding": "^1.0.6",
+    "react": "18",
+    "react-dom": "18"
+  }
+}
