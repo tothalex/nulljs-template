@@ -1,13 +1,12 @@
 {
   "name": "nulljs-template",
-  "trustedDependencies": ["@tothalex/nulljs"],
   "scripts": {
-    "init": "npx nulljs profile create dev && nulljs auth && nulljs profile use dev",
     "dev": "npx nulljs dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@eslint/json": "^0.12.0",
+    "@tothalex/nulljs": "0.0.83",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.1",
     "eslint": "^9.29.0",

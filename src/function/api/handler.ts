@@ -7,7 +7,7 @@ const handler = async () => {
 };
 
 export default {
-  name: "route-handler",
+  name: "route-handler-1",
   timeout: 1000,
   route: "GET hey",
   handler,

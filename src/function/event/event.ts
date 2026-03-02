@@ -6,7 +6,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 
 export default {
   name: "event",
-  timeout: 6_000_000,
+  timeout: 3000,
   event: "event",
   handler,
 };
