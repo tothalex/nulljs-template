@@ -1,9 +1,11 @@
+import { Buffer } from "buffer";
 import { send } from "cloud/event";
 import type { CronConfig } from "cloud";
 
 const handler = async () => {
   console.log("Cron tick — sending event");
-  await send("tick", JSON.stringify({ at: new Date().toISOString() }));
+  // Event payloads must be binary (Buffer/typed array); handlers receive a Buffer.
+  await send("tick", Buffer.from(JSON.stringify({ at: new Date().toISOString() })));
 };
 
 export default {

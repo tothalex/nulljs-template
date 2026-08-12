@@ -37,14 +37,15 @@ The payload always arrives as a **Buffer** — decode with `payload.toString()` 
 From any function (route, cron, or another event handler):
 
 ```ts
+import { Buffer } from "buffer";
 import { send } from "cloud/event";
 
-await send("user-signed-up", JSON.stringify({ userId: "123" }));
+await send("user-signed-up", Buffer.from(JSON.stringify({ userId: "123" })));
 ```
 
-Serialize the payload yourself (JSON string is the convention). Events are fire-and-forget within
-the app — there is no reply channel; write results to `cloud/cache` or the database if the sender
-needs them.
+The payload **must be a Buffer/typed array** — the runtime rejects plain strings and objects, so
+always wrap with `Buffer.from(...)`. Events are fire-and-forget within the app — there is no reply
+channel; write results to `cloud/cache` or the database if the sender needs them.
 
 ## Verify
 

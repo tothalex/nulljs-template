@@ -81,7 +81,8 @@ by the bundler:
   parameterized), `fetchAll/fetchOne/execute`, `db.transaction(async (tx) => …)`
 - `cloud/cache` — app-scoped KV: `cache.set(key, value, ttlMs?)`, `get`, `remove`, `has`
 - `cloud/secret` — `secret.get/store`, `secret.hash/verify_hash` (Argon2), `jwt.sign(claims, expiresInSeconds?)` / `jwt.verify(token)`
-- `cloud/event` — `send(eventName, payload)` delivers to this app's event functions
+- `cloud/event` — `send(eventName, payload)` delivers to this app's event functions; payload must
+  be a Buffer/typed array (`Buffer.from(JSON.stringify(data))`), never a plain string
 - `cloud/uuid` — `uuid()`
 
 There is no filesystem module and no `child_process` — deliberately. Don't try to polyfill them.
