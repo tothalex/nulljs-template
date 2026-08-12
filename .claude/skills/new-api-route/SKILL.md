@@ -11,7 +11,7 @@ the handler. Name the file after the route (e.g. `users.ts` for `/users`).
 ## Template
 
 ```ts
-import { defineRoute } from "@tothalex/cloud";
+import { defineRoute, json, notFound } from "@tothalex/cloud";
 
 export default defineRoute({
   name: "get-user",          // unique within the app
@@ -20,17 +20,26 @@ export default defineRoute({
   secrets: [],               // secret names to inject as process.env; omit = all, [] = none
   handler: async (request) => {
     const { id } = request.params; // from :id in the route
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    };
+    if (!id) return notFound();
+    return json({ id });
   },
 });
 ```
 
 `defineRoute` is a zero-cost identity helper: `request` is inferred as `HttpRequest`, the return
 type is checked as `HttpResponse`, and config typos are compile errors.
+
+**Response helpers** (Hono-style, from `@tothalex/cloud`) — prefer these over hand-built
+`{statusCode, headers, body}` objects:
+
+- `json(data)` / `json(data, 201)` / `json(data, { status, headers })` — serializes + sets
+  Content-Type
+- `text(body, init?)`, `html(body, init?)`
+- `redirect(location, status?)` (302 default), `notFound(message?)`,
+  `error(status, message)` → `{"error": message}` JSON
+
+A raw `HttpResponse` object still works for anything the helpers don't cover (binary bodies,
+multiple Set-Cookie via array header values).
 
 ## Config rules
 

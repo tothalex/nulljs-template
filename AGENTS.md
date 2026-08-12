@@ -36,17 +36,22 @@ Every function file **default-exports its definition** via the `defineRoute` / `
 that type-check the config fields and the handler signature for that trigger type in one place:
 
 ```ts
-import { defineRoute } from "@tothalex/cloud";
+import { defineRoute, json } from "@tothalex/cloud";
 
 export default defineRoute({
   name: "my-route",        // unique within the app
   route: "GET /things/:id",
   timeout: 10,             // SECONDS (default 30, max 900) — not milliseconds!
   handler: async (request) => {
-    return { statusCode: 200, body: request.params.id };
+    return json({ id: request.params.id });
   },
 });
 ```
+
+Response helpers from `@tothalex/cloud` (Hono-style): `json(data, init?)`, `text`, `html`,
+`redirect(location, status?)`, `notFound(message?)`, `error(status, message)` — `init` is a
+status number or `{ status, headers }`. Raw `{ statusCode, headers?, body? }` objects still
+work (needed for binary bodies or multiple `Set-Cookie` values).
 
 The `request` parameter and return type are inferred (`HttpRequest` → `HttpResponse`); a cron
 handler takes no arguments; an event handler receives a `Buffer`. The config is parsed server-side

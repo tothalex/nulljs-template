@@ -1,4 +1,4 @@
-import { defineRoute } from "@tothalex/cloud";
+import { defineRoute, json, error } from "@tothalex/cloud";
 
 // `schema` is the single source of truth: it validates the request body before the
 // handler runs, the handler receives `request.body` already JSON-parsed, and its
@@ -18,10 +18,9 @@ export default defineRoute({
   },
   handler: async (request) => {
     const { text, repeat = 1 } = request.body;
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ echo: Array(repeat).fill(text).join(" ") }),
-    };
+    if (text.trim().length === 0) {
+      return error(422, "text must not be blank");
+    }
+    return json({ echo: Array(repeat).fill(text).join(" ") });
   },
 });

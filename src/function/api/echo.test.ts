@@ -28,6 +28,16 @@ describe("echo", () => {
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body as string).echo).toBe("hi hi hi");
   });
+
+  test("blank text (passes schema, fails business rule) returns a 422 error()", async () => {
+    const response = await invokeRoute(echo, {
+      method: "POST",
+      path: "/echo",
+      body: { text: " " },
+    });
+    expect(response.statusCode).toBe(422);
+    expect(JSON.parse(response.body as string).error).toBe("text must not be blank");
+  });
 });
 
 describe("cron -> event pipeline", () => {
