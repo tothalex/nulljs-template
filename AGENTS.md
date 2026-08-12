@@ -22,6 +22,7 @@ src/
   index.tsx    optional React SPA entry (exports `Page`); delete it if you don't need a UI
   lib/         shared code, bundled into each function that imports it
   cloud.d.ts   pulls in the ambient types from @tothalex/cloud — don't remove
+test/cloud/    vitest alias shims mapping cloud/* to the in-memory doubles — don't remove
 .secret        local secrets (KEY=VALUE lines, gitignored) — deploy with `nulljs secret deploy`
 .claude/skills # step-by-step skills for common tasks (new route/cron/event, cloud modules)
 ```
@@ -110,15 +111,16 @@ There is no filesystem module and no `child_process` — deliberately. Don't try
 ## Workflows
 
 ```bash
-# prerequisite: the nulljs binary (CLI + embedded server), installed once:
+# prerequisite: the nulljs binary (CLI + embedded server + bundler), installed once:
 #   curl -fsSL https://raw.githubusercontent.com/tothalex/nulljs-public/main/install.sh | sh
-bun install            # once
-bun run dev            # nulljs dev: local server + auto-deploy on save + Vite for the SPA
-bun test               # unit tests (in-memory cloud/* doubles — see the test-functions skill)
-bun run typecheck      # tsc --noEmit
-bun run deploy         # deploy all functions to the selected environment
+pnpm install           # once (deps for typechecking, tests, and the SPA's react)
+pnpm dev               # nulljs dev: local server + auto-deploy on save, SPA live reload
+pnpm test              # vitest unit tests (in-memory cloud/* doubles — see the test-functions skill)
+pnpm typecheck         # tsc --noEmit
+nulljs deploy          # deploy all functions to the selected environment
 nulljs secret deploy   # push .secret file values to the server
-nulljs status          # server/app status
+nulljs config list     # environments and which one is selected
+nulljs                 # bare: server/app status (add --json for machines)
 ```
 
 **Agents:** `nulljs dev --headless` runs the dev loop without the TUI, emitting NDJSON
@@ -127,11 +129,12 @@ events on stdout (`ready` with URLs+token, `deploy` results, `server-log`); add
 '{...}'` calls a deployed route (Host header handled for you); `nulljs logs
 --function <name> [--follow]` and `nulljs invocations --status failed` read telemetry —
 all support `--json`, none ever prompt when stdin isn't a TTY. Unit tests are the fastest
-loop: `bun test` runs handlers against in-memory cloud/* modules in milliseconds.
+loop: `pnpm test` runs handlers against in-memory cloud/* modules in milliseconds.
 
-`nulljs dev` runs everything locally: control plane + dashboard on **:3000**, function gateway on
-**:3001**, and (when `src/index.tsx` exists) a Vite dev server on **:5173** that proxies `/api` and
-`/assets` to the gateway. Saving a file under `src/` auto-deploys it.
+`nulljs dev` runs everything locally in one process — no bun, no node, no vite: control plane +
+dashboard on **:3000**, function gateway on **:3001**. Saving a file under `src/` auto-deploys it,
+including the React SPA (bundled natively by the CLI and served at
+`http://nulljs-template.localhost:3001/`); open pages live-reload after each deploy.
 
 **Verify a route:** `curl http://nulljs-template.localhost:3001/hello` (subdomain = `name` in
 `package.json`).
@@ -161,6 +164,6 @@ instead.
 ## Skills
 
 `.claude/skills/` contains step-by-step guides Claude Code loads on demand: `new-api-route`,
-`new-cron-job`, `new-event-handler`, `cloud-modules`, `test-functions` (bun test with the
+`new-cron-job`, `new-event-handler`, `cloud-modules`, `test-functions` (vitest with the
 in-memory cloud/* doubles), and `read-logs` (querying logs, invocations, and error messages).
 Use them when adding functions, writing tests, or debugging.

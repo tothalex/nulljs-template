@@ -55,7 +55,7 @@ Events are fire-and-forget within the app — there is no reply channel; write r
 
 ## Verify
 
-With `bun run dev` running, trigger the sender (e.g. curl the API route that calls `send`), then
+With `pnpm dev` running, trigger the sender (e.g. curl the API route that calls `send`), then
 check the handler ran (see the `read-logs` skill for the full API):
 
 ```bash

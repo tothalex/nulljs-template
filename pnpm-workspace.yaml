@@ -1,0 +1,5 @@
+# esbuild's postinstall fetches its platform binary — required by vitest.
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@tothalex/cloud'

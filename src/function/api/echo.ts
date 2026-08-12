@@ -3,7 +3,7 @@ import { defineRoute, json, error } from "@tothalex/cloud";
 // `schema` is the single source of truth: it validates the request body before the
 // handler runs, the handler receives `request.body` already JSON-parsed, and its
 // TypeScript type is INFERRED from the schema (text: string, repeat?: number) — no
-// generic, no duplication. Structural schema mistakes fail `bun run typecheck`.
+// generic, no duplication. Structural schema mistakes fail `pnpm typecheck`.
 export default defineRoute({
   name: "echo",
   route: "POST /echo",

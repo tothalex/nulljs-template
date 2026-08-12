@@ -1,3 +1,0 @@
-# bun test resolves the cloud/* runtime modules to in-memory test doubles.
-[test]
-preload = ["@tothalex/cloud/testing/preload"]

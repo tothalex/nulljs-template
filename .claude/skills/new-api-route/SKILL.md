@@ -52,7 +52,7 @@ multiple Set-Cookie via array header values).
   schema** — declare the shape once in the schema and `request.body.text` is typed; no
   generic needed. (An explicit `defineRoute<MyBody>` still overrides, e.g. for string-form
   schemas.) The field is a typed `JsonSchema`, so structural mistakes
-  (`required: "email"` instead of `["email"]`, misspelled keywords) fail `bun run typecheck`;
+  (`required: "email"` instead of `["email"]`, misspelled keywords) fail `pnpm typecheck`;
   schemas that pass typecheck but fail to compile (bad `$ref`, malformed `pattern` regex) are
   rejected at deploy time with the reason. Example:
   `schema: { type: "object", required: ["email"], properties: { email: { type: "string" } } }` —
@@ -70,7 +70,7 @@ multiple Set-Cookie via array header values).
 
 ## Verify
 
-With `bun run dev` running, the route deploys automatically on save. Then:
+With `pnpm dev` running, the route deploys automatically on save. Then:
 
 ```bash
 curl http://<app-name>.localhost:3001/users/123

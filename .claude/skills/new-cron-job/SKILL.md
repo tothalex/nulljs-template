@@ -43,7 +43,7 @@ signature (no arguments, return value ignored).
 
 ## Verify
 
-With `bun run dev` running, the job deploys on save and starts firing on schedule. For a quick
+With `pnpm dev` running, the job deploys on save and starts firing on schedule. For a quick
 test, temporarily use a fast schedule like `*/10 * * * * *` (every 10s), confirm it fires, then
 set the real schedule. To confirm from the terminal (see the `read-logs` skill for the full API):
 

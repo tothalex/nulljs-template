@@ -6,26 +6,34 @@ SPA, running on pooled QuickJS runtimes.
 
 ## Quickstart
 
-Install the `nulljs` binary once (it contains the whole platform — CLI and server):
+Install the `nulljs` binary once (it contains the whole platform — CLI, server, and bundler):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tothalex/nulljs-public/main/install.sh | sh
 ```
 
-Then:
+Then either scaffold a fresh project from this template:
 
 ```bash
-bun install
-bun run dev
+nulljs create my-app && cd my-app
+nulljs dev
 ```
 
-`bun run dev` starts a full local stack and auto-deploys your functions on save:
+or work in this repo directly:
+
+```bash
+pnpm install
+pnpm dev          # runs `nulljs dev`
+```
+
+`nulljs dev` starts a full local stack — no bun, no node, no vite — and auto-deploys
+everything on save, including the React SPA (the browser live-reloads after each deploy):
 
 | What | Where |
 |------|-------|
 | Dashboard (logs, invocations, secrets) | http://localhost:3000 |
 | Your functions (gateway) | http://nulljs-template.localhost:3001 |
-| React SPA (Vite dev server) | http://localhost:5173 |
+| React SPA | http://nulljs-template.localhost:3001/ |
 
 Try the example route:
 
@@ -45,6 +53,7 @@ src/
     event/     event handlers (async messaging between functions)
   index.tsx    React SPA entry (exports `Page`); delete it if you don't need a UI
   lib/         shared code, bundled into functions that import it
+test/cloud/    vitest aliases mapping cloud/* imports to in-memory test doubles
 .secret        local secrets (gitignored); copy .secret.example to get started
 ```
 
@@ -65,16 +74,17 @@ Note: the runtime is QuickJS with a Node-compat subset — **not Node.js**. Ther
 
 ```bash
 cp .secret.example .secret     # then edit values
-nulljs secret deploy       # push to the server
+nulljs secret deploy           # push to the server
 ```
 
 Functions read secrets from `process.env` and can declare exactly which ones they need via the
 `secrets: [...]` config field.
 
-## Deploying
+## Testing and deploying
 
 ```bash
-bun run deploy                 # deploy all functions to the selected environment
+pnpm test                      # vitest against in-memory cloud/* doubles
+nulljs deploy                  # deploy all functions to the selected environment
 ```
 
 ## AI-assisted development

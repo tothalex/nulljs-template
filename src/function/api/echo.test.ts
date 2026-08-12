@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "bun:test";
+import { describe, test, expect, beforeEach } from "vitest";
 import { cloudTest, invokeRoute, invokeCron, invokeEvent } from "@tothalex/cloud/testing";
 
 import echo from "./echo";
@@ -48,7 +48,7 @@ describe("cron -> event pipeline", () => {
     const event = cloudTest.events.sent[0]!;
     expect(event.name).toBe("tick");
     // send() serialized the plain object to JSON bytes
-    expect(JSON.parse(event.payload.toString()).at).toBeString();
+    expect(typeof JSON.parse(event.payload.toString()).at).toBe("string");
 
     // Feed the captured payload to the schema'd handler — it receives it parsed.
     await invokeEvent(onTick, event.payload);

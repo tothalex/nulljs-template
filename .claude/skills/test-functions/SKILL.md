@@ -1,23 +1,24 @@
 ---
 name: test-functions
-description: Write and run unit tests for NullJS functions with bun test. Use when the user wants tests for a route/cron/event function, asks to verify handler logic, or before/after changing a handler.
+description: Write and run unit tests for NullJS functions with vitest. Use when the user wants tests for a route/cron/event function, asks to verify handler logic, or before/after changing a handler.
 ---
 
 # Testing functions
 
-Functions are unit-testable in milliseconds: `bunfig.toml` preloads `@tothalex/cloud/testing`,
-which registers in-memory `cloud/*` modules, so handler files import cleanly under `bun test`.
+Functions are unit-testable in milliseconds: `vitest.config.ts` aliases the server-provided
+`cloud/*` modules to the in-memory doubles from `@tothalex/cloud/testing` (via the shims in
+`test/cloud/`), so handler files import cleanly under vitest.
 Colocate tests next to functions as `<name>.test.ts` — the CLI never deploys `*.test.ts`.
 
 ```bash
-bun test              # run all tests
-bun test echo         # run tests matching "echo"
+pnpm test             # run all tests (vitest run)
+pnpm test echo        # run tests matching "echo"
 ```
 
 ## Template
 
 ```ts
-import { describe, test, expect, beforeEach } from "bun:test";
+import { describe, test, expect, beforeEach } from "vitest";
 import { cloudTest, invokeRoute, invokeCron, invokeEvent } from "@tothalex/cloud/testing";
 
 import myRoute from "./my-route";
@@ -54,6 +55,6 @@ test("returns 200", async () => {
 - `cloudTest.reset()` — clear everything (put it in `beforeEach`).
 
 Fidelity notes: `send()` rejects non-Buffer payloads exactly like production; `cloud/got`
-uses `fetch` underneath, so mock `fetch` (e.g. Bun's `mock.module` or a test server) for
-outbound HTTP; secrets from function config (`process.env.X`) are just env vars in tests —
-set `process.env.X` directly.
+uses `fetch` underneath, so mock `fetch` (e.g. `vi.stubGlobal("fetch", ...)` or a test
+server) for outbound HTTP; secrets from function config (`process.env.X`) are just env vars
+in tests — set `process.env.X` directly.
