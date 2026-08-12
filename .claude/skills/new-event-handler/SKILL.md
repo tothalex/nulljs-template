@@ -59,7 +59,7 @@ With `bun run dev` running, trigger the sender (e.g. curl the API route that cal
 check the handler ran (see the `read-logs` skill for the full API):
 
 ```bash
-TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+TOKEN=$(nulljs session | awk '/Token:/ {print $2}')
 curl -s -H "Authorization: Bearer $TOKEN" \
   "http://localhost:3000/api/logs?function_name=<handler-name>&limit=20"
 ```

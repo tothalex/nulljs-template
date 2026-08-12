@@ -8,9 +8,9 @@ description: Read function logs, invocation history, and error messages from the
 **Shortcut: the CLI wraps all of this.** Prefer these over raw API calls:
 
 ```bash
-npx nulljs invocations --status failed          # what failed, with error_message inline
-npx nulljs logs --function <name> [--follow]    # console output; -x <execution_id> for one run
-npx nulljs invoke /route -X POST -d '{...}'     # call a route through the gateway
+nulljs invocations --status failed          # what failed, with error_message inline
+nulljs logs --function <name> [--follow]    # console output; -x <execution_id> for one run
+nulljs invoke /route -X POST -d '{...}'     # call a route through the gateway
 ```
 
 All support `--json`. The raw API below remains useful for filters the CLI doesn't expose or
@@ -23,11 +23,11 @@ at http://localhost:3000 shows the same data, but the API is what you can read d
 ## 1. Get a read-only token (once per session)
 
 ```bash
-TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+TOKEN=$(nulljs session | awk '/Token:/ {print $2}')
 ```
 
 The token is read-only and expires; mint a new one if requests start returning 401. All requests
-below go to the control plane — `http://localhost:3000` in dev (`npx nulljs config list` shows the
+below go to the control plane — `http://localhost:3000` in dev (`nulljs config list` shows the
 API URL per environment) — with `-H "Authorization: Bearer $TOKEN"`.
 
 ## 2. Invocations — what ran and whether it failed

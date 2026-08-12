@@ -110,20 +110,22 @@ There is no filesystem module and no `child_process` — deliberately. Don't try
 ## Workflows
 
 ```bash
+# prerequisite: the nulljs binary (CLI + embedded server), installed once:
+#   curl -fsSL https://raw.githubusercontent.com/tothalex/nulljs-public/main/install.sh | sh
 bun install            # once
 bun run dev            # nulljs dev: local server + auto-deploy on save + Vite for the SPA
 bun test               # unit tests (in-memory cloud/* doubles — see the test-functions skill)
 bun run typecheck      # tsc --noEmit
 bun run deploy         # deploy all functions to the selected environment
-npx nulljs secret deploy   # push .secret file values to the server
-npx nulljs status          # server/app status
+nulljs secret deploy   # push .secret file values to the server
+nulljs status          # server/app status
 ```
 
-**Agents:** `npx nulljs dev --headless` runs the dev loop without the TUI, emitting NDJSON
+**Agents:** `nulljs dev --headless` runs the dev loop without the TUI, emitting NDJSON
 events on stdout (`ready` with URLs+token, `deploy` results, `server-log`); add
-`--api-port/--gateway-port` if the defaults are taken. `npx nulljs invoke /route -X POST -d
-'{...}'` calls a deployed route (Host header handled for you); `npx nulljs logs
---function <name> [--follow]` and `npx nulljs invocations --status failed` read telemetry —
+`--api-port/--gateway-port` if the defaults are taken. `nulljs invoke /route -X POST -d
+'{...}'` calls a deployed route (Host header handled for you); `nulljs logs
+--function <name> [--follow]` and `nulljs invocations --status failed` read telemetry —
 all support `--json`, none ever prompt when stdin isn't a TTY. Unit tests are the fastest
 loop: `bun test` runs handlers against in-memory cloud/* modules in milliseconds.
 
@@ -138,7 +140,7 @@ loop: `bun test` runs handlers against in-memory cloud/* modules in milliseconds
 then query the control-plane API:
 
 ```bash
-TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+TOKEN=$(nulljs session | awk '/Token:/ {print $2}')
 curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/invocations?status=failed&limit=10"
 curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/logs?function_name=hello&limit=50"
 ```

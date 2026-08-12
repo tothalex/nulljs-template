@@ -6,6 +6,14 @@ SPA, running on pooled QuickJS runtimes.
 
 ## Quickstart
 
+Install the `nulljs` binary once (it contains the whole platform — CLI and server):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tothalex/nulljs-public/main/install.sh | sh
+```
+
+Then:
+
 ```bash
 bun install
 bun run dev
@@ -57,7 +65,7 @@ Note: the runtime is QuickJS with a Node-compat subset — **not Node.js**. Ther
 
 ```bash
 cp .secret.example .secret     # then edit values
-npx nulljs secret deploy       # push to the server
+nulljs secret deploy       # push to the server
 ```
 
 Functions read secrets from `process.env` and can declare exactly which ones they need via the

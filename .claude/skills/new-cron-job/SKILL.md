@@ -48,7 +48,7 @@ test, temporarily use a fast schedule like `*/10 * * * * *` (every 10s), confirm
 set the real schedule. To confirm from the terminal (see the `read-logs` skill for the full API):
 
 ```bash
-TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+TOKEN=$(nulljs session | awk '/Token:/ {print $2}')
 curl -s -H "Authorization: Bearer $TOKEN" \
   "http://localhost:3000/api/invocations?function_name=<name>&limit=5"
 ```
