@@ -5,7 +5,7 @@
     "": {
       "name": "nulljs-template",
       "dependencies": {
-        "@tothalex/cloud": "^0.0.41",
+        "@tothalex/cloud": "^0.0.47",
         "fast-text-encoding": "^1.0.6",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
@@ -13,15 +13,13 @@
       "devDependencies": {
         "@eslint/js": "^9.29.0",
         "@eslint/json": "^0.12.0",
-        "@tothalex/nulljs": "0.0.83",
+        "@tothalex/nulljs": "^0.1.14",
         "@types/react": "^19.1.1",
         "@types/react-dom": "^19.1.1",
         "eslint": "^9.29.0",
         "globals": "^16.2.0",
-        "typescript-eslint": "^8.34.0",
-      },
-      "peerDependencies": {
         "typescript": "^5",
+        "typescript-eslint": "^8.34.0",
       },
     },
   },
@@ -324,15 +322,15 @@
 
     "@tokenizer/token": ["@tokenizer/token@0.3.0", "", {}, "sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A=="],
 
-    "@tothalex/cloud": ["@tothalex/cloud@0.0.41", "", { "dependencies": { "@types/node": "^24.0.4" } }, "sha512-HCb0CWbbhuSBF+7vYsJHnO06yJhS4yQzj72F9wl+3wBw2nNwUgzKUR3wYANZXqwxt9kzP/dGbg5vKxEFFUvBdQ=="],
+    "@tothalex/cloud": ["@tothalex/cloud@0.0.47", "", { "dependencies": { "@types/node": "^24.0.4" } }, "sha512-fLd+CxpxehmnS2X46ChLH/dvdVi0YOzRrbm4axFmga9uAQSlEOhFjC5lpdeJGXCFt4e+i9b7Yw5nclKpy3u9yg=="],
 
-    "@tothalex/nulljs": ["@tothalex/nulljs@0.0.83", "", { "dependencies": { "@clack/prompts": "^0.11.0", "@opentui/core": "^0.1.62", "@opentui/react": "^0.1.62", "@tailwindcss/vite": "^4.1.18", "@vitejs/plugin-react": "^5.1.2", "chalk": "^5.6.2", "commander": "^14.0.2", "vite": "^7.3.0" }, "optionalDependencies": { "@tothalex/nulljs-darwin-arm64": "^0.1.4", "@tothalex/nulljs-linux-arm64": "^0.1.4", "@tothalex/nulljs-linux-x64": "^0.1.4" }, "peerDependencies": { "react": "^19", "typescript": "^5" }, "bin": { "nulljs": "dist/cli.js" } }, "sha512-8CnOvsYs6+2eIBj0Y/Te71M+D/cp/GJpMe2dfv62LFWUeE1kVr4HH7RUpKN1AuHxmixHhFUJ2BHWkscFfnrflA=="],
+    "@tothalex/nulljs": ["@tothalex/nulljs@0.1.14", "", { "dependencies": { "@clack/prompts": "^0.11.0", "@opentui/core": "^0.1.62", "@opentui/react": "^0.1.62", "@tailwindcss/vite": "^4.1.18", "@vitejs/plugin-react": "^5.1.2", "chalk": "^5.6.2", "commander": "^14.0.2", "vite": "^7.3.0" }, "optionalDependencies": { "@tothalex/nulljs-darwin-arm64": "0.1.14", "@tothalex/nulljs-linux-arm64": "0.1.14", "@tothalex/nulljs-linux-x64": "0.1.14" }, "peerDependencies": { "react": "^19", "typescript": "^5" }, "bin": { "nulljs": "dist/cli.js" } }, "sha512-CJ8nmYAKfDVM1+4inoInT7mx70oSHsgTZOlRJvMERm1fDUfOZPPrVNsEK0/Gc1idwUobXCa1doDLKM1aBJcgEA=="],
 
-    "@tothalex/nulljs-darwin-arm64": ["@tothalex/nulljs-darwin-arm64@0.1.4", "", { "os": "darwin", "cpu": "arm64" }, "sha512-HmD5TFwpyV+G6XmDSpMNURLvnhU9GV34HOfdkydf+vQHYiUmvAag/PFblYWyhhv+EMci+/EO7AlJamaxwnWAmg=="],
+    "@tothalex/nulljs-darwin-arm64": ["@tothalex/nulljs-darwin-arm64@0.1.14", "", { "os": "darwin", "cpu": "arm64" }, "sha512-mg8c3F1LEKTNnbmM0flWKAXoikLp4ucCpZqh+Z6UM6oLrU8hZ2HJhZQu53GC1fZ7fNNMrynAKsaBdU5MvDSCKw=="],
 
-    "@tothalex/nulljs-linux-arm64": ["@tothalex/nulljs-linux-arm64@0.1.4", "", { "os": "linux", "cpu": "arm64" }, "sha512-q4/bCbPaZJttZ8BOP/YPktHhSabe8Nbtm4TMlzbOFQk9MsARSJSxpxiih1XnxneclafKQOrN8MKdcMPeMwLwEQ=="],
+    "@tothalex/nulljs-linux-arm64": ["@tothalex/nulljs-linux-arm64@0.1.14", "", { "os": "linux", "cpu": "arm64" }, "sha512-Tm3GUGiK6D41xEzUH9ngM1XmPR5kqyqFBl4NdQImhDBE2Bw/TqcqxcDjKqO87JmSsfbLYLd2cfdpd75kim9IWw=="],
 
-    "@tothalex/nulljs-linux-x64": ["@tothalex/nulljs-linux-x64@0.1.4", "", { "os": "linux", "cpu": "x64" }, "sha512-DNdb0uVa74Dq25Em9D3GqgL+4Hx/vtPPmFK3TSq/TfEMXgJMTSPu9imOVmlc38HY6y3PgTf9BrvZlmeftjKoFQ=="],
+    "@tothalex/nulljs-linux-x64": ["@tothalex/nulljs-linux-x64@0.1.14", "", { "os": "linux", "cpu": "x64" }, "sha512-1DqsrMtHNA7J1uMah1v2JcJAlHSsNX6uCY9VFQ+RUqvJWcH8NlMrsyS9/BrRTZchbE6lennP2Bg1+ojFitPsYg=="],
 
     "@types/babel__core": ["@types/babel__core@7.20.5", "", { "dependencies": { "@babel/parser": "^7.20.7", "@babel/types": "^7.20.7", "@types/babel__generator": "*", "@types/babel__template": "*", "@types/babel__traverse": "*" } }, "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA=="],
 

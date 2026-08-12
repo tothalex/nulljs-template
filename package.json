@@ -1,23 +1,23 @@
 {
   "name": "nulljs-template",
   "scripts": {
-    "dev": "npx nulljs dev"
+    "dev": "npx nulljs dev",
+    "deploy": "npx nulljs deploy",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@eslint/json": "^0.12.0",
-    "@tothalex/nulljs": "0.0.83",
+    "@tothalex/nulljs": "^0.1.14",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.1",
     "eslint": "^9.29.0",
     "globals": "^16.2.0",
+    "typescript": "^5",
     "typescript-eslint": "^8.34.0"
   },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
   "dependencies": {
-    "@tothalex/cloud": "^0.0.41",
+    "@tothalex/cloud": "^0.0.47",
     "fast-text-encoding": "^1.0.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"

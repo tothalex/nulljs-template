@@ -32,7 +32,14 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
-.claude
+
+# Claude Code local state (skills in .claude/skills ARE committed)
+.claude/settings.local.json
 
 # nulljs
 .nulljs
+
+# secrets — never commit real values; see .secret.example
+.secret
+.secret.*
+!.secret.example
