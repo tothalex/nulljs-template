@@ -42,7 +42,12 @@ export default {
 
 ## Verify
 
-With `bun run dev` running, the job deploys on save and starts firing on schedule. Check
-`console.log` output and invocations in the dashboard at http://localhost:3000. For a quick test,
-temporarily use a fast schedule like `*/10 * * * * *` (every 10s), confirm it fires, then set the
-real schedule.
+With `bun run dev` running, the job deploys on save and starts firing on schedule. For a quick
+test, temporarily use a fast schedule like `*/10 * * * * *` (every 10s), confirm it fires, then
+set the real schedule. To confirm from the terminal (see the `read-logs` skill for the full API):
+
+```bash
+TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:3000/api/invocations?function_name=<name>&limit=5"
+```

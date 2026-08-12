@@ -48,6 +48,13 @@ needs them.
 
 ## Verify
 
-With `bun run dev` running, trigger the sender (e.g. curl the API route that calls `send`) and
-check the handler's `console.log` output in the dashboard at http://localhost:3000. For an
-isolated test, add a temporary cron function that sends the event every few seconds.
+With `bun run dev` running, trigger the sender (e.g. curl the API route that calls `send`), then
+check the handler ran (see the `read-logs` skill for the full API):
+
+```bash
+TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:3000/api/logs?function_name=<handler-name>&limit=20"
+```
+
+For an isolated test, add a temporary cron function that sends the event every few seconds.

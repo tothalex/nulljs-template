@@ -112,8 +112,21 @@ npx nulljs status          # server/app status
 `/assets` to the gateway. Saving a file under `src/` auto-deploys it.
 
 **Verify a route:** `curl http://nulljs-template.localhost:3001/hello` (subdomain = `name` in
-`package.json`). Cron/event functions: check logs in the dashboard at http://localhost:3000, or
-`console.log` output there.
+`package.json`).
+
+**Reading logs (agents: this is how you see function output and errors):** mint a read-only token,
+then query the control-plane API:
+
+```bash
+TOKEN=$(npx nulljs session | awk '/Token:/ {print $2}')
+curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/invocations?status=failed&limit=10"
+curl -s -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/logs?function_name=hello&limit=50"
+```
+
+Invocation records carry `status`, `duration_ms`, `error_message`, and `failure_phase`;
+`/api/logs` returns `console.log` output (filter by `execution_id` to see one run). Full endpoint
+and filter reference: the `read-logs` skill. Humans can use the dashboard at http://localhost:3000
+instead.
 
 ## Conventions
 
@@ -126,4 +139,5 @@ npx nulljs status          # server/app status
 ## Skills
 
 `.claude/skills/` contains step-by-step guides Claude Code loads on demand: `new-api-route`,
-`new-cron-job`, `new-event-handler`, `cloud-modules`. Use them when adding functions.
+`new-cron-job`, `new-event-handler`, `cloud-modules`, and `read-logs` (how to query logs,
+invocations, and error messages from the server API). Use them when adding functions or debugging.

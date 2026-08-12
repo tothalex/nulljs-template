@@ -58,5 +58,5 @@ With `bun run dev` running, the route deploys automatically on save. Then:
 curl http://<app-name>.localhost:3001/users/123
 ```
 
-`<app-name>` is `name` from `package.json`. Logs and invocations appear in the dashboard at
-http://localhost:3000.
+`<app-name>` is `name` from `package.json`. If the response isn't what you expect, read the
+function's logs and error messages via the API — see the `read-logs` skill.
