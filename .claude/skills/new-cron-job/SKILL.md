@@ -11,20 +11,21 @@ the handler.
 ## Template
 
 ```ts
-import type { CronConfig } from "cloud";
+import { defineCron } from "@tothalex/cloud";
 
-const handler = async () => {
-  console.log("running scheduled work");
-};
-
-export default {
+export default defineCron({
   name: "nightly-cleanup",   // unique within the app
   cron: "0 0 3 * * *",       // 6-field: sec min hour day month weekday
   timeout: 60,               // SECONDS (default 30, max 900)
   secrets: [],               // secret names injected as process.env; omit = all, [] = none
-  handler,
-} satisfies CronConfig & { handler: typeof handler };
+  handler: async () => {
+    console.log("running scheduled work");
+  },
+});
 ```
+
+`defineCron` is a zero-cost identity helper that type-checks the config and enforces the handler
+signature (no arguments, return value ignored).
 
 ## Cron expression rules
 

@@ -14,23 +14,22 @@ out of request handlers.
 One file per handler under `src/function/event/`:
 
 ```ts
-import type { EventConfig } from "cloud";
+import { defineEvent } from "@tothalex/cloud";
 
-const handler = async (payload: Buffer) => {
-  const data = JSON.parse(payload.toString());
-  console.log("processing", data);
-};
-
-export default {
+export default defineEvent({
   name: "process-signup",   // unique within the app
   event: "user-signed-up",  // event name to subscribe to
   timeout: 60,              // SECONDS (default 30, max 900)
   secrets: [],              // secret names injected as process.env; omit = all, [] = none
-  handler,
-} satisfies EventConfig & { handler: typeof handler };
+  handler: async (payload) => {
+    const data = JSON.parse(payload.toString());
+    console.log("processing", data);
+  },
+});
 ```
 
-The payload always arrives as a **Buffer** — decode with `payload.toString()` and parse as needed.
+`defineEvent` is a zero-cost identity helper; `payload` is inferred as **Buffer** — decode with
+`payload.toString()` and parse as needed.
 
 ## Sending events
 

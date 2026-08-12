@@ -31,23 +31,26 @@ deployed automatically — the directory determines the trigger type expected in
 
 ## Function anatomy
 
-Every function file **default-exports a config object** that includes its `handler`. The config is
-parsed server-side at deploy time by evaluating the module, so it must be statically sound.
+Every function file **default-exports its definition** via the `defineRoute` / `defineCron` /
+`defineEvent` helpers from `@tothalex/cloud`. They are identity functions — zero runtime cost —
+that type-check the config fields and the handler signature for that trigger type in one place:
 
 ```ts
-import type { HttpRequest, HttpResponse, RouteConfig } from "cloud";
+import { defineRoute } from "@tothalex/cloud";
 
-const handler = async (request: HttpRequest): Promise<HttpResponse> => {
-  return { statusCode: 200, body: "ok" };
-};
-
-export default {
+export default defineRoute({
   name: "my-route",        // unique within the app
   route: "GET /things/:id",
   timeout: 10,             // SECONDS (default 30, max 900) — not milliseconds!
-  handler,
-} satisfies RouteConfig & { handler: typeof handler };
+  handler: async (request) => {
+    return { statusCode: 200, body: request.params.id };
+  },
+});
 ```
+
+The `request` parameter and return type are inferred (`HttpRequest` → `HttpResponse`); a cron
+handler takes no arguments; an event handler receives a `Buffer`. The config is parsed server-side
+at deploy time by evaluating the module, so keep the definition statically sound.
 
 Shared config fields (all types): `name` (required), `timeout?` (seconds), `size?`
 (`'small' | 'medium' | 'large' | 'xlarge'` — memory limit and pool capacity), `secrets?`
@@ -59,7 +62,7 @@ Per-type fields:
 | Type  | Field | Format | Handler signature |
 |-------|-------|--------|-------------------|
 | Route | `route` | `"METHOD /path"`, `:param` params, `*` catch-all; bare path = GET | `(request: HttpRequest) => HttpResponse \| Promise<HttpResponse>` |
-| Route | `schema?` | JSON Schema (object or string) validating the request body | — |
+| Route | `schema?` | `JsonSchema` object validating the request body — fully typed, so structural mistakes fail `tsc`; schemas that fail to compile are rejected at deploy with the reason | — |
 | Cron  | `cron` | 5- or 6-field cron expression (5-field gets seconds prepended) | `() => void \| Promise<void>` |
 | Event | `event` | event name string | `(payload: Buffer) => void \| Promise<void>` |
 
@@ -132,8 +135,8 @@ instead.
 ## Conventions
 
 - TypeScript strict; double quotes + semicolons (eslint config at root).
-- One function per file; use `satisfies RouteConfig/CronConfig/EventConfig` on the default export
-  so config typos fail typecheck instead of deploy.
+- One function per file; always define through `defineRoute`/`defineCron`/`defineEvent` so config
+  typos and handler-signature mistakes fail typecheck instead of deploy.
 - Shared helpers go in `src/lib/` — they're bundled into each function that imports them.
 - Declare `secrets: [...]` explicitly on functions that use secrets.
 
