@@ -5,6 +5,17 @@ description: Read function logs, invocation history, and error messages from the
 
 # Reading logs and invocations
 
+**Shortcut: the CLI wraps all of this.** Prefer these over raw API calls:
+
+```bash
+npx nulljs invocations --status failed          # what failed, with error_message inline
+npx nulljs logs --function <name> [--follow]    # console output; -x <execution_id> for one run
+npx nulljs invoke /route -X POST -d '{...}'     # call a route through the gateway
+```
+
+All support `--json`. The raw API below remains useful for filters the CLI doesn't expose or
+when scripting against a remote server.
+
 Functions' `console.log`/`console.error` output and every invocation (with status, duration, and
 error message) are stored on the server and readable through the control-plane API. The dashboard
 at http://localhost:3000 shows the same data, but the API is what you can read directly.

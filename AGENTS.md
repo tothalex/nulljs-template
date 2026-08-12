@@ -105,11 +105,20 @@ There is no filesystem module and no `child_process` — deliberately. Don't try
 ```bash
 bun install            # once
 bun run dev            # nulljs dev: local server + auto-deploy on save + Vite for the SPA
+bun test               # unit tests (in-memory cloud/* doubles — see the test-functions skill)
 bun run typecheck      # tsc --noEmit
 bun run deploy         # deploy all functions to the selected environment
 npx nulljs secret deploy   # push .secret file values to the server
 npx nulljs status          # server/app status
 ```
+
+**Agents:** `npx nulljs dev --headless` runs the dev loop without the TUI, emitting NDJSON
+events on stdout (`ready` with URLs+token, `deploy` results, `server-log`); add
+`--api-port/--gateway-port` if the defaults are taken. `npx nulljs invoke /route -X POST -d
+'{...}'` calls a deployed route (Host header handled for you); `npx nulljs logs
+--function <name> [--follow]` and `npx nulljs invocations --status failed` read telemetry —
+all support `--json`, none ever prompt when stdin isn't a TTY. Unit tests are the fastest
+loop: `bun test` runs handlers against in-memory cloud/* modules in milliseconds.
 
 `nulljs dev` runs everything locally: control plane + dashboard on **:3000**, function gateway on
 **:3001**, and (when `src/index.tsx` exists) a Vite dev server on **:5173** that proxies `/api` and
@@ -143,5 +152,6 @@ instead.
 ## Skills
 
 `.claude/skills/` contains step-by-step guides Claude Code loads on demand: `new-api-route`,
-`new-cron-job`, `new-event-handler`, `cloud-modules`, and `read-logs` (how to query logs,
-invocations, and error messages from the server API). Use them when adding functions or debugging.
+`new-cron-job`, `new-event-handler`, `cloud-modules`, `test-functions` (bun test with the
+in-memory cloud/* doubles), and `read-logs` (querying logs, invocations, and error messages).
+Use them when adding functions, writing tests, or debugging.
