@@ -62,7 +62,7 @@ Per-type fields:
 | Type  | Field | Format | Handler signature |
 |-------|-------|--------|-------------------|
 | Route | `route` | `"METHOD /path"`, `:param` params, `*` catch-all; bare path = GET | `(request: HttpRequest) => HttpResponse \| Promise<HttpResponse>` |
-| Route | `schema?` | `JsonSchema` object validating the request body — fully typed, so structural mistakes fail `tsc`; schemas that fail to compile are rejected at deploy with the reason | — |
+| Route | `schema?` | `JsonSchema` object validating the request body — the single source of truth: `request.body`'s TS type is inferred from it (no generic), structural mistakes fail `tsc`, uncompilable schemas are rejected at deploy with the reason | — |
 | Cron  | `cron` | 5- or 6-field cron expression (5-field gets seconds prepended) | `() => void \| Promise<void>` |
 | Event | `event` | event name string | `(payload: Buffer) => void \| Promise<void>` |
 

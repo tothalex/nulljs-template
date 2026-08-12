@@ -39,7 +39,10 @@ type is checked as `HttpResponse`, and config typos are compile errors.
   SPA uses `*`, explicit routes win.
 - `schema` (optional): JSON Schema object validating the request body; invalid requests get a
   `400` with the validation reason before the handler runs, and the handler receives
-  `request.body` already JSON-parsed — type it via `defineRoute<MyBody>(...)`. The field is a typed `JsonSchema`, so structural mistakes
+  `request.body` already JSON-parsed. **The body's TypeScript type is inferred from the
+  schema** — declare the shape once in the schema and `request.body.text` is typed; no
+  generic needed. (An explicit `defineRoute<MyBody>` still overrides, e.g. for string-form
+  schemas.) The field is a typed `JsonSchema`, so structural mistakes
   (`required: "email"` instead of `["email"]`, misspelled keywords) fail `bun run typecheck`;
   schemas that pass typecheck but fail to compile (bad `$ref`, malformed `pattern` regex) are
   rejected at deploy time with the reason. Example:

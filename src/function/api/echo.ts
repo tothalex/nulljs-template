@@ -1,10 +1,10 @@
 import { defineRoute } from "@tothalex/cloud";
 
-// `schema` validates the request body before the handler runs, and the handler receives
-// `request.body` already JSON-parsed, typed by the generic below. The schema object is
-// fully typed too: structural mistakes (e.g. `required: "text"` instead of `["text"]`)
-// fail `bun run typecheck` instead of the deploy.
-export default defineRoute<{ text: string; repeat?: number }>({
+// `schema` is the single source of truth: it validates the request body before the
+// handler runs, the handler receives `request.body` already JSON-parsed, and its
+// TypeScript type is INFERRED from the schema (text: string, repeat?: number) — no
+// generic, no duplication. Structural schema mistakes fail `bun run typecheck`.
+export default defineRoute({
   name: "echo",
   route: "POST /echo",
   timeout: 10,

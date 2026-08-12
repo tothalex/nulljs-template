@@ -5,7 +5,7 @@
     "": {
       "name": "nulljs-template",
       "dependencies": {
-        "@tothalex/cloud": "^0.0.51",
+        "@tothalex/cloud": "^0.0.53",
         "fast-text-encoding": "^1.0.6",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
@@ -323,7 +323,7 @@
 
     "@tokenizer/token": ["@tokenizer/token@0.3.0", "", {}, "sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A=="],
 
-    "@tothalex/cloud": ["@tothalex/cloud@0.0.51", "", { "dependencies": { "@types/node": "^24.0.4" } }, "sha512-pB8DRQugr04iwyNRJ7FAcM+s8HT3itRWb9PSmLhldcv8tgr+Axq1ZvtlfWzyQgJCrZnj/bLgDRhQlIgZAzAHzQ=="],
+    "@tothalex/cloud": ["@tothalex/cloud@0.0.53", "", { "dependencies": { "@types/node": "^24.0.4" } }, "sha512-I9NhJFmIZibYV4H1k8DfYegbXWG6Y+8kaCNMYrOeLeYSJjfew+4N6GHREiQxzhxPA/45ldUUicjOla8vVKPyuw=="],
 
     "@tothalex/nulljs": ["@tothalex/nulljs@0.1.14", "", { "dependencies": { "@clack/prompts": "^0.11.0", "@opentui/core": "^0.1.62", "@opentui/react": "^0.1.62", "@tailwindcss/vite": "^4.1.18", "@vitejs/plugin-react": "^5.1.2", "chalk": "^5.6.2", "commander": "^14.0.2", "vite": "^7.3.0" }, "optionalDependencies": { "@tothalex/nulljs-darwin-arm64": "0.1.14", "@tothalex/nulljs-linux-arm64": "0.1.14", "@tothalex/nulljs-linux-x64": "0.1.14" }, "peerDependencies": { "react": "^19", "typescript": "^5" }, "bin": { "nulljs": "dist/cli.js" } }, "sha512-CJ8nmYAKfDVM1+4inoInT7mx70oSHsgTZOlRJvMERm1fDUfOZPPrVNsEK0/Gc1idwUobXCa1doDLKM1aBJcgEA=="],
 
