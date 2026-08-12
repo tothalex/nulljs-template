@@ -64,7 +64,8 @@ Per-type fields:
 | Route | `route` | `"METHOD /path"`, `:param` params, `*` catch-all; bare path = GET | `(request: HttpRequest) => HttpResponse \| Promise<HttpResponse>` |
 | Route | `schema?` | `JsonSchema` object validating the request body — the single source of truth: `request.body`'s TS type is inferred from it (no generic), structural mistakes fail `tsc`, uncompilable schemas are rejected at deploy with the reason | — |
 | Cron  | `cron` | 5- or 6-field cron expression (5-field gets seconds prepended) | `() => void \| Promise<void>` |
-| Event | `event` | event name string | `(payload: Buffer) => void \| Promise<void>` |
+| Event | `event` | event name string | `(payload) => void \| Promise<void>` — payload typed from `schema` when declared, else `Buffer` |
+| Event | `schema?` | `JsonSchema` validating the payload; handler gets it parsed+typed, violations record a failed invocation with the reason | — |
 
 The full types live in `node_modules/@tothalex/cloud/src/` — `cloud/index.d.ts` for configs and
 the HTTP contract, `cloud/*.d.ts` for the runtime modules. Treat those files as the source of truth.
@@ -84,8 +85,9 @@ by the bundler:
   parameterized), `fetchAll/fetchOne/execute`, `db.transaction(async (tx) => …)`
 - `cloud/cache` — app-scoped KV: `cache.set(key, value, ttlMs?)`, `get`, `remove`, `has`
 - `cloud/secret` — `secret.get/store`, `secret.hash/verify_hash` (Argon2), `jwt.sign(claims, expiresInSeconds?)` / `jwt.verify(token)`
-- `cloud/event` — `send(eventName, payload)` delivers to this app's event functions; payload must
-  be a Buffer/typed array (`Buffer.from(JSON.stringify(data))`), never a plain string
+- `cloud/event` — `send(eventName, payload)` delivers to this app's event functions; plain
+  objects/strings are serialized for you (Buffers pass through). Handlers with a `schema`
+  receive the payload parsed, validated, and typed; without one, a `Buffer`
 - `cloud/uuid` — `uuid()`
 
 There is no filesystem module and no `child_process` — deliberately. Don't try to polyfill them.

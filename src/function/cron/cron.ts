@@ -1,4 +1,3 @@
-import { Buffer } from "buffer";
 import { send } from "cloud/event";
 import { defineCron } from "@tothalex/cloud";
 
@@ -8,7 +7,7 @@ export default defineCron({
   timeout: 30, // seconds
   handler: async () => {
     console.log("Cron tick — sending event");
-    // Event payloads must be binary (Buffer/typed array); handlers receive a Buffer.
-    await send("tick", Buffer.from(JSON.stringify({ at: new Date().toISOString() })));
+    // Plain objects are serialized for you; the receiving handler's schema types them.
+    await send("tick", { at: new Date().toISOString() });
   },
 });

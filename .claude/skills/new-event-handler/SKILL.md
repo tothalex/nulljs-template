@@ -21,30 +21,37 @@ export default defineEvent({
   event: "user-signed-up",  // event name to subscribe to
   timeout: 60,              // SECONDS (default 30, max 900)
   secrets: [],              // secret names injected as process.env; omit = all, [] = none
+  schema: {
+    type: "object",
+    required: ["userId"],
+    properties: { userId: { type: "string" }, plan: { type: "string" } },
+  },
   handler: async (payload) => {
-    const data = JSON.parse(payload.toString());
-    console.log("processing", data);
+    // payload is parsed, validated, and TYPED from the schema: { userId: string; plan?: string }
+    console.log("processing signup for", payload.userId);
   },
 });
 ```
 
-`defineEvent` is a zero-cost identity helper; `payload` is inferred as **Buffer** — decode with
-`payload.toString()` and parse as needed.
+`defineEvent` is a zero-cost identity helper. **Declare a `schema` and the handler receives the
+payload already JSON-parsed, validated, and typed by inference** — no manual
+`JSON.parse(payload.toString())`. A payload that violates the schema records a failed invocation
+with the reason (visible in `nulljs invocations --status failed`) instead of running the handler.
+Omit the schema and the handler receives the raw bytes as a `Buffer`.
 
 ## Sending events
 
 From any function (route, cron, or another event handler):
 
 ```ts
-import { Buffer } from "buffer";
 import { send } from "cloud/event";
 
-await send("user-signed-up", Buffer.from(JSON.stringify({ userId: "123" })));
+await send("user-signed-up", { userId: "123" });
 ```
 
-The payload **must be a Buffer/typed array** — the runtime rejects plain strings and objects, so
-always wrap with `Buffer.from(...)`. Events are fire-and-forget within the app — there is no reply
-channel; write results to `cloud/cache` or the database if the sender needs them.
+Plain objects and strings are serialized for you (Buffers/typed arrays pass through as-is).
+Events are fire-and-forget within the app — there is no reply channel; write results to
+`cloud/cache` or the database if the sender needs them.
 
 ## Verify
 

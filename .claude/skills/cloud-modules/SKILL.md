@@ -80,10 +80,10 @@ JWTs are app-scoped: a token signed by one app fails verification in another.
 ## cloud/event and cloud/uuid
 
 ```ts
-import { Buffer } from "buffer";
 import { send } from "cloud/event";
-// Payload must be a Buffer/typed array (plain strings are rejected); handler receives a Buffer.
-await send("event-name", Buffer.from(JSON.stringify({ some: "data" })));
+// Plain objects/strings are serialized for you; Buffers pass through as-is. A handler
+// with a `schema` receives the payload parsed+typed; without one it gets a Buffer.
+await send("event-name", { some: "data" });
 
 import { uuid } from "cloud/uuid";
 const id = uuid().toString();

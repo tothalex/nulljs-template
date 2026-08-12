@@ -31,15 +31,16 @@ describe("echo", () => {
 });
 
 describe("cron -> event pipeline", () => {
-  test("cron sends a tick event the handler can consume", async () => {
+  test("cron sends a tick event the schema-typed handler consumes", async () => {
     await invokeCron(cron);
 
     expect(cloudTest.events.sent).toHaveLength(1);
     const event = cloudTest.events.sent[0]!;
     expect(event.name).toBe("tick");
-
-    // Feed the captured payload to the event handler, closing the loop.
-    await invokeEvent(onTick, event.payload);
+    // send() serialized the plain object to JSON bytes
     expect(JSON.parse(event.payload.toString()).at).toBeString();
+
+    // Feed the captured payload to the schema'd handler — it receives it parsed.
+    await invokeEvent(onTick, event.payload);
   });
 });
