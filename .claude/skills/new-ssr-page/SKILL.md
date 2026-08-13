@@ -60,6 +60,31 @@ export default definePage<Props>({
 - Client-side interactivity (`useState`, `onClick`, effects) works after hydration —
   no extra setup.
 
+## Known limitation: stateful UI/animation libraries can crash the server render
+
+**Caution, observed in practice, not theoretical:** components from third-party libraries that
+keep their own internal scheduling or animation state across renders can make
+`react-dom/server.edge`'s render never complete under QuickJS, throwing a generic, unhelpful
+React error (something about a server render not finishing synchronously — misleading if
+nothing in the page actually uses Suspense). The identical component tree renders fine under
+V8/Node, so this is a QuickJS-specific timing/scheduling difference, not a bug in your JSX. It
+has been reproduced independent of which props are passed to the component and independent of
+whether the component is instantiated once or many times in a single render pass — so treat any
+animation/motion library component as a suspect, not just a specific usage pattern.
+
+A component gated behind client-only state that's `false` during the first server render (e.g.
+`{isOpen && <SomeAnimatedThing />}` with `isOpen` starting `false`) sidesteps this entirely, since
+it never mounts server-side — that's why a page can use such a library elsewhere without issue.
+The fix, when you hit it, is usually to replace the offending element with a plain element and a
+CSS transition/animation for the same visual effect — for most simple fades and hover states this
+is a straight swap with no visible difference.
+
+**This has not been systematically characterized** — only a couple of specific constructs from
+one library have been confirmed; this is a caution to watch for, not a blanket "don't use
+animation libraries in SSR pages." If you hit this: the error tells you almost nothing (no
+component stack, no indication of which element), so bisect by commenting out chunks of the
+page's JSX (binary search) until the render succeeds, then narrow to the specific element.
+
 ## SSR page vs SPA vs API route
 
 | Want | Use |

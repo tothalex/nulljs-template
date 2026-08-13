@@ -85,7 +85,9 @@ runs server-side (secrets + `cloud/*` fine; result must be JSON-serializable); t
 component runs on both server and browser, so it must not touch either. `size` defaults to
 `medium` for pages — React recurses per tree depth and the small tier's 512KB stack
 overflows around ~100 nesting levels. The page module is evaluated once per pooled runtime
-and reused, so module-scope state persists across requests. See the `new-ssr-page` skill.
+and reused, so module-scope state persists across requests. **Some stateful animation/UI
+libraries can crash the server render under QuickJS with a generic, unhelpful React error
+— see the `new-ssr-page` skill for what to watch for before debugging blind.**
 
 **HTTP contract highlights:** `request.body` is UTF-8 text (`''` if not valid UTF-8 — use
 `request.body_bytes: Uint8Array` for binary), `params` holds `:route` params, `query_params` is
