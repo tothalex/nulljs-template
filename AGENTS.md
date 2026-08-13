@@ -19,12 +19,13 @@ src/
     api/       HTTP route functions   (one file = one function)
     cron/      scheduled functions
     event/     event handler functions
-  index.tsx    optional React SPA entry (exports `Page`); delete it if you don't need a UI
+  page/        server-side-rendered React pages (one file = one page) — see below
+  index.tsx    optional client-rendered React SPA entry (exports `Page`)
   lib/         shared code, bundled into each function that imports it
   cloud.d.ts   pulls in the ambient types from @tothalex/cloud — don't remove
 test/cloud/    vitest alias shims mapping cloud/* to the in-memory doubles — don't remove
 .secret        local secrets (KEY=VALUE lines, gitignored) — deploy with `nulljs secret deploy`
-.claude/skills # step-by-step skills for common tasks (new route/cron/event, cloud modules)
+.claude/skills # step-by-step skills for common tasks (new route/cron/event/ssr-page, cloud modules)
 ```
 
 Files anywhere under `src/function/{api,cron,event}/` ending in `.ts`/`.tsx` are discovered and
@@ -75,6 +76,16 @@ Per-type fields:
 
 The full types live in `node_modules/@tothalex/cloud/src/` — `cloud/index.d.ts` for configs and
 the HTTP contract, `cloud/*.d.ts` for the runtime modules. Treat those files as the source of truth.
+
+**SSR pages** (`src/page/*.tsx`, via `definePage`) are the fourth kind: a named `Page`
+component export plus a `definePage<Props>({ name, route, props? })` default export. The
+platform renders `<Page {...props} />` to HTML server-side per request (React production
+build inside QuickJS) and hydrates it in the browser with the same props. `props(request)`
+runs server-side (secrets + `cloud/*` fine; result must be JSON-serializable); the `Page`
+component runs on both server and browser, so it must not touch either. `size` defaults to
+`medium` for pages — React recurses per tree depth and the small tier's 512KB stack
+overflows around ~100 nesting levels. The page module is evaluated once per pooled runtime
+and reused, so module-scope state persists across requests. See the `new-ssr-page` skill.
 
 **HTTP contract highlights:** `request.body` is UTF-8 text (`''` if not valid UTF-8 — use
 `request.body_bytes: Uint8Array` for binary), `params` holds `:route` params, `query_params` is
@@ -164,6 +175,6 @@ instead.
 ## Skills
 
 `.claude/skills/` contains step-by-step guides Claude Code loads on demand: `new-api-route`,
-`new-cron-job`, `new-event-handler`, `cloud-modules`, `test-functions` (vitest with the
-in-memory cloud/* doubles), and `read-logs` (querying logs, invocations, and error messages).
-Use them when adding functions, writing tests, or debugging.
+`new-cron-job`, `new-event-handler`, `new-ssr-page`, `cloud-modules`, `test-functions`
+(vitest with the in-memory cloud/* doubles), and `read-logs` (querying logs, invocations, and
+error messages). Use them when adding functions or pages, writing tests, or debugging.

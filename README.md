@@ -51,7 +51,8 @@ src/
     api/       HTTP routes — one file per route
     cron/      scheduled functions
     event/     event handlers (async messaging between functions)
-  index.tsx    React SPA entry (exports `Page`); delete it if you don't need a UI
+  page/        server-side-rendered React pages — one file per page (try /ssr)
+  index.tsx    client-rendered React SPA entry (exports `Page`); delete it if unneeded
   lib/         shared code, bundled into functions that import it
 test/cloud/    vitest aliases mapping cloud/* imports to in-memory test doubles
 .secret        local secrets (gitignored); copy .secret.example to get started
@@ -59,6 +60,11 @@ test/cloud/    vitest aliases mapping cloud/* imports to in-memory test doubles
 
 Every function file default-exports a config object with its `handler` — see the examples in
 `src/function/` and the full guide in [AGENTS.md](AGENTS.md).
+
+Pages under `src/page/` are **server-side rendered**: the platform renders
+`<Page {...props} />` to HTML per request (React inside QuickJS — no node involved) and
+hydrates it in the browser. `props(request)` runs server-side with secrets and `cloud/*`
+access. Try it: `curl http://nulljs-template.localhost:3001/ssr?name=you`.
 
 ## Runtime modules
 

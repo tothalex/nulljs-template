@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@tothalex/cloud':
-        specifier: ^0.0.55
-        version: 0.0.55
+        specifier: ^0.0.56
+        version: 0.0.56
       react:
         specifier: ^19.1.1
         version: 19.2.8
@@ -430,8 +430,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tothalex/cloud@0.0.55':
-    resolution: {integrity: sha512-pNgwSYPzeIHDz1iqG8gWQL1TAmpLb1sDZlC9g3fUAU4ogBMMTFRf2shQQFeTAqXIEvbVppo3pDJf/RIjGsE5Fw==}
+  '@tothalex/cloud@0.0.56':
+    resolution: {integrity: sha512-tll4IWKZjnbOC88OyZ3jNfBMfElwdnRz/zY1AuqXv7X5chO6P0EBwDq22FYseHCfFmDUT/OX30oQueP6aZHzBA==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -1328,7 +1328,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.4':
     optional: true
 
-  '@tothalex/cloud@0.0.55':
+  '@tothalex/cloud@0.0.56':
     dependencies:
       '@types/node': 24.13.3
 
