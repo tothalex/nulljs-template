@@ -17,8 +17,10 @@
     "vitest": "^3.2.0"
   },
   "dependencies": {
-    "@tothalex/cloud": "^0.0.56",
+    "@tothalex/cloud": "^0.0.59",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "svelte": "^5.56.8",
+    "solid-js": "^1.9.9"
   }
 }

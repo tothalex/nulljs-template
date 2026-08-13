@@ -5,8 +5,9 @@ Guide for AI agents (and humans) working in this NullJS application.
 ## What this is
 
 A **NullJS application**: a collection of serverless JavaScript/TypeScript functions (HTTP routes,
-cron jobs, event handlers) plus an optional React SPA, deployed to a NullJS server. Functions run
-inside pooled QuickJS runtimes — this is **not Node.js** (see "Runtime constraints" below).
+cron jobs, event handlers) plus optional pages — SSR pages and a client-rendered SPA, in React,
+Svelte, or Solid — deployed to a NullJS server. Functions run inside the platform's pooled,
+sandboxed JavaScript runtimes — this is **not Node.js** (see "Runtime constraints" below).
 
 The application name comes from the `name` field in `package.json`. On the server, the app is
 routed by subdomain: `http://{app-name}.{base-domain}/...` (in dev: `http://nulljs-template.localhost:3001`).
@@ -19,8 +20,10 @@ src/
     api/       HTTP route functions   (one file = one function)
     cron/      scheduled functions
     event/     event handler functions
-  page/        server-side-rendered React pages (one file = one page) — see below
-  index.tsx    optional client-rendered React SPA entry (exports `Page`)
+  page/        server-side-rendered pages, one per file — React/Solid `.tsx`, or Svelte as
+               `<name>.svelte` + sibling `<name>.ts` config — see below
+  index.tsx    optional client-rendered SPA entry (React, or Solid when it imports solid-js;
+               a Svelte SPA is `index.svelte` + optional `index.ts` config)
   lib/         shared code, bundled into each function that imports it
   cloud.d.ts   pulls in the ambient types from @tothalex/cloud — don't remove
 test/cloud/    vitest alias shims mapping cloud/* to the in-memory doubles — don't remove
@@ -77,22 +80,53 @@ Per-type fields:
 The full types live in `node_modules/@tothalex/cloud/src/` — `cloud/index.d.ts` for configs and
 the HTTP contract, `cloud/*.d.ts` for the runtime modules. Treat those files as the source of truth.
 
-**SSR pages** (`src/page/*.tsx`, via `definePage`) are the fourth kind: a named `Page`
-component export plus a `definePage<Props>({ name, route, props? })` default export. The
-platform renders `<Page {...props} />` to HTML server-side per request (React production
-build inside QuickJS) and hydrates it in the browser with the same props. `props(request)`
-runs server-side (secrets + `cloud/*` fine; result must be JSON-serializable); the `Page`
-component runs on both server and browser, so it must not touch either. `size` defaults to
-`medium` for pages — React recurses per tree depth and the small tier's 512KB stack
-overflows around ~100 nesting levels. The page module is evaluated once per pooled runtime
-and reused, so module-scope state persists across requests. **Some stateful animation/UI
-libraries can crash the server render under QuickJS with a generic, unhelpful React error
-— see the `new-ssr-page` skill for what to watch for before debugging blind.**
+**SSR pages** (`src/page/`) are the fourth kind, in your choice of framework:
+
+- **React** (`.tsx`): a named `Page` export plus a `defineReactPage<Props>({ name, route,
+  props? })` default export. (`definePage` is the deprecated old name.)
+- **Svelte** (`.svelte` + sibling `.ts`): the component file plus a config file of the same
+  stem default-exporting `defineSveltePage({ route?, props? })` — `name`/`route` default from
+  the file stem. Scoped `<style>` ships as a stylesheet automatically.
+- **Solid** (`.tsx`): same single-file shape as React, but with `defineSolidPage` — that call
+  is also how the platform tells Solid from React, so use it exactly once, in the page file.
+  Keep all the page's JSX in that one file, and start the file with
+  `/** @jsxImportSource solid-js */` so the type checker uses Solid's JSX types.
+
+All three render to HTML server-side per request and hydrate in the browser with the same
+props. `props(request)` runs server-side (secrets + `cloud/*` fine; result must be
+JSON-serializable); the component runs on both server and browser, so it must not touch
+either. `size` defaults to `medium` for pages; very deep component trees may need
+`large`/`xlarge`. The page module is evaluated once per pooled runtime and reused, so
+module-scope state persists across requests. Svelte and Solid pages render 3–5× faster than
+React pages on this platform and ship far smaller bundles — for new pages with no framework
+constraint, prefer them. **Some stateful animation/UI libraries can crash the React server
+render with a generic, unhelpful error — see the `new-ssr-page` skill for what to watch for
+before debugging blind.**
 
 **HTTP contract highlights:** `request.body` is UTF-8 text (`''` if not valid UTF-8 — use
 `request.body_bytes: Uint8Array` for binary), `params` holds `:route` params, `query_params` is
 last-wins (use `query_params_all` for repeats). Response `headers` values may be `string[]` (one
 line each — the only way to send multiple `Set-Cookie`); `body` may be a string or typed array.
+
+## Routing: how functions, SSR pages, and the SPA compose
+
+All routes live in one per-app table; a request is matched by **specificity, not
+declaration order**: exact path segments beat `:params`, and `:params` beat the `*`
+catch-all. That is what lets one app nest everything:
+
+- **API routes** (`src/function/api/`) own their exact `METHOD /path` routes.
+- **SSR pages** own their exact `route` (`/`, `/docs`, `/board`, …).
+- **The SPA** takes whatever is left. `route: "*"` (the default) makes it the app-wide
+  fallback: every path with no more specific owner serves the SPA shell — which is exactly
+  what a client-side router needs, since deep links like `/account/settings` must return
+  the shell for the router to take over. A subtree mount like `route: "/app/*"` scopes
+  that behavior under `/app` and also serves `/app` and `/app/` themselves.
+
+So an app with an SSR landing page at `/`, SSR content at `/docs`, an API under
+`/api/...`, and a routed SPA at `*` all works with no configuration beyond the routes
+themselves. Two things to remember: the SPA fallback answers **GET only** (an unmatched
+POST is still a 404), and an unknown path under an SPA mount returns the shell with
+status 200 — "not found" under an SPA mount is the client router's job.
 
 ## Runtime modules (`cloud/*`)
 
@@ -113,7 +147,8 @@ There is no filesystem module and no `child_process` — deliberately. Don't try
 
 ## Runtime constraints
 
-- Engine is **QuickJS with llrt's Node-compat subset**, not Node. Available built-ins: `assert`,
+- The engine is the platform's lightweight sandboxed runtime with a Node-compat subset — **not
+  Node**. Available built-ins: `assert`,
   `buffer`, `crypto`, `dns`, `events`, `net`, `os`, `process`, `stream/web`, `string_decoder`,
   `timers`, `tty`, `url`, `util`, `zlib`. Also `fetch`. **No `fs`, no `child_process`, no `http`.**
 - npm packages are bundled into the deployed function. Prefer the `cloud/*` modules and built-ins;
@@ -177,6 +212,6 @@ instead.
 ## Skills
 
 `.claude/skills/` contains step-by-step guides Claude Code loads on demand: `new-api-route`,
-`new-cron-job`, `new-event-handler`, `new-ssr-page`, `cloud-modules`, `test-functions`
+`new-cron-job`, `new-event-handler`, `new-ssr-page` (all three frameworks), `cloud-modules`, `test-functions`
 (vitest with the in-memory cloud/* doubles), and `read-logs` (querying logs, invocations, and
 error messages). Use them when adding functions or pages, writing tests, or debugging.

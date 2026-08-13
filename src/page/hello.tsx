@@ -1,4 +1,4 @@
-import { definePage } from "@tothalex/cloud";
+import { defineReactPage } from "@tothalex/cloud";
 
 type Props = { message: string; renderedAt: string };
 
@@ -11,7 +11,7 @@ export const Page = ({ message, renderedAt }: Props) => (
   </main>
 );
 
-export default definePage<Props>({
+export default defineReactPage<Props>({
   name: "hello-page",
   route: "/ssr",
   // Runs server-side with full function powers (secrets, cloud/* modules).

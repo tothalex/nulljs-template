@@ -1,8 +1,9 @@
 # NullJS Template
 
-Starter template for a [NullJS](https://github.com/tothalex/nulljs) application — serverless
-JavaScript/TypeScript functions (HTTP routes, cron jobs, event handlers) plus an optional React
-SPA, running on pooled QuickJS runtimes.
+Starter template for a [NullJS](https://github.com/tothalex/nulljs-public) application —
+serverless JavaScript/TypeScript functions (HTTP routes, cron jobs, event handlers) plus
+pages in React, Svelte, or Solid: server-side-rendered pages and an optional client-rendered
+SPA, running on the platform's pooled sandboxed runtimes.
 
 ## Quickstart
 
@@ -52,7 +53,8 @@ src/
     cron/      scheduled functions
     event/     event handlers (async messaging between functions)
   page/        server-side-rendered React pages — one file per page (try /ssr)
-  index.tsx    client-rendered React SPA entry (exports `Page`); delete it if unneeded
+  index.tsx    client-rendered SPA entry (React; or Solid when it imports solid-js;
+               Svelte SPAs use index.svelte instead); delete it if unneeded
   lib/         shared code, bundled into functions that import it
 test/cloud/    vitest aliases mapping cloud/* imports to in-memory test doubles
 .secret        local secrets (gitignored); copy .secret.example to get started
@@ -61,10 +63,14 @@ test/cloud/    vitest aliases mapping cloud/* imports to in-memory test doubles
 Every function file default-exports a config object with its `handler` — see the examples in
 `src/function/` and the full guide in [AGENTS.md](AGENTS.md).
 
-Pages under `src/page/` are **server-side rendered**: the platform renders
-`<Page {...props} />` to HTML per request (React inside QuickJS — no node involved) and
-hydrates it in the browser. `props(request)` runs server-side with secrets and `cloud/*`
-access. Try it: `curl http://nulljs-template.localhost:3001/ssr?name=you`.
+Pages under `src/page/` are **server-side rendered**, in React, Svelte, or Solid: the
+platform renders the page to HTML per request and hydrates it in the browser with the
+same props. `props(request)` runs server-side with secrets and `cloud/*` access. The
+template ships one of each — try them:
+`curl http://nulljs-template.localhost:3001/ssr?name=you` (React),
+`/docs` (Svelte), `/board` (Solid). Routing composes by specificity: API routes and
+pages own their exact paths, the SPA catches the rest — see AGENTS.md's Routing
+section.
 
 ## Runtime modules
 
@@ -73,8 +79,8 @@ Functions import server-provided modules instead of npm packages:
 (secrets, JWT, password hashing), `cloud/event` (messaging), `cloud/uuid`. Typings ship in
 `@tothalex/cloud`.
 
-Note: the runtime is QuickJS with a Node-compat subset — **not Node.js**. There is no `fs` and no
-`child_process`.
+Note: the runtime is a sandboxed engine with a Node-compat subset — **not Node.js**. There is
+no `fs` and no `child_process`.
 
 ## Secrets
 
