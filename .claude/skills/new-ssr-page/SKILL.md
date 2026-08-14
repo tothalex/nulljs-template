@@ -6,10 +6,13 @@ description: Add a server-side-rendered page (SSR) under src/page/ in React, Sve
 # New SSR page
 
 A file under `src/page/` is a server-side-rendered page — the directory is what makes it
-a page (like `src/function/`), one page per file. The server renders it to HTML per
-request and the browser hydrates it with the same props. Three frameworks are supported;
-the authoring shape differs slightly per framework, everything else (props, routing,
-deploys) is identical.
+a page (like `src/function/`), one page per file. Discovery is recursive: a page's files
+can sit directly in `src/page/` or in their own subdirectory — handy for Svelte's
+two-file layout (`src/page/dashboard/dashboard.svelte` + `dashboard.ts`). Subdirectories
+are organization only: `name` and `route` still default from the file stem, never from
+the directory. The server renders each page to HTML per request and the browser hydrates
+it with the same props. Three frameworks are supported; the authoring shape differs
+slightly per framework, everything else (props, routing, deploys) is identical.
 
 **Choosing:** Svelte and Solid pages render 3–5× faster than React on this platform and
 ship much smaller bundles. Pick React when the page needs the React ecosystem; otherwise
@@ -46,8 +49,10 @@ export default defineReactPage<Props>({
 ## Svelte (`src/page/<name>.svelte` + sibling `<name>.ts`)
 
 Two files — a `.svelte` component can't hold the config export. The sibling `.ts` with
-the same stem IS the page's config, not a separate function. See `src/page/docs.svelte`
-+ `docs.ts` for a working example.
+the same stem IS the page's config, not a separate function. Since every Svelte page is
+a file pair, giving each page its own subdirectory keeps `src/page/` tidy:
+`src/page/dashboard/dashboard.svelte` + `src/page/dashboard/dashboard.ts` works exactly
+like the flat layout. See `src/page/docs.svelte` + `docs.ts` for a working example.
 
 ```svelte
 <!-- src/page/dashboard.svelte -->

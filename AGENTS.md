@@ -20,8 +20,9 @@ src/
     api/       HTTP route functions   (one file = one function)
     cron/      scheduled functions
     event/     event handler functions
-  page/        server-side-rendered pages, one per file — React/Solid `.tsx`, or Svelte as
-               `<name>.svelte` + sibling `<name>.ts` config — see below
+  page/        server-side-rendered pages — React/Solid `.tsx`, or Svelte as
+               `<name>.svelte` + sibling `<name>.ts` config; flat, or each page in its
+               own subdirectory (`page/foo/foo.svelte` + `foo.ts`) — see below
   index.tsx    optional client-rendered SPA entry (React, or Solid when it imports solid-js;
                a Svelte SPA is `index.svelte` + optional `index.ts` config)
   lib/         shared code, bundled into each function that imports it
@@ -91,6 +92,11 @@ the HTTP contract, `cloud/*.d.ts` for the runtime modules. Treat those files as 
   is also how the platform tells Solid from React, so use it exactly once, in the page file.
   Keep all the page's JSX in that one file, and start the file with
   `/** @jsxImportSource solid-js */` so the type checker uses Solid's JSX types.
+
+Pages are discovered recursively under `src/page/`: keep a page's files directly in the
+directory or give each page its own subdirectory (`src/page/transactions/transactions.svelte`
++ `transactions.ts`) — subdirectories are organization only, `name`/`route` still default
+from the file stem.
 
 All three render to HTML server-side per request and hydrate in the browser with the same
 props. `props(request)` runs server-side (secrets + `cloud/*` fine; result must be
